@@ -206,7 +206,6 @@ def schedule(andrewId):
             session.delete(selectedCourse)
             return jsonify(success = "")
 
-
 if __name__ == "__main__":
     engine = create_engine('sqlite:///test.db', echo=True)
     Session.configure(bind = engine)
