@@ -9,32 +9,28 @@
 
     <div class="row">
         <div class="large-3 medium-3 columns panel">
-	        <form method="POST" action="submitinput">
-                <h5>Select a class</h5>
-                <label>Your Andrew ID:</label>
-                <input type="text" name="andrewid" placeholder="Andrew ID" />
-                <label>Course number</label>
-                <div class="row">
-                    <span class="large-4 medium-4 columns">
-                    <input style="padding-right:2px" type="number" min="0" max="99" maxlength="2" name="deptnumber" placeholder="##" onkeypress="return isNumberKey(event)"/>
-                    </span>
-                    <span class="large-1 medium-1 columns" style="padding-top:8px">-</span>
-                    <span class="large-6 medium-6 columns">
-                    <input style="padding-left:2px" type="number" min="0" max="999" maxlength="3" name="coursenumber" placeholder="###" onkeypress="return isNumberKey(event)"/>
-                    </span>
-                </div>
-                <label>Choose the semester</label>
-	
-                <select name="semester">
-		            <option value="s14">Spring 2014</option>
-		            <option value="f14">Fall 2014</option>
-		            <option value="s15">Spring 2015</option>
-		            <option value="f15">Fall 2015</option>
-                </select>
-                <input type="submit" value="Input Class" href="#" class="tiny button" />
-            </form>
+	  <form ng-controller="AddCourseCtrl" ng-submit="addCourse(user, course)">
+            <h5>Select a class</h5>
+            <label>Your Andrew ID:</label>
+            <input type="text" ng-model="user.andrewId" name="andrewid" placeholder="Andrew ID"/>
+            <label>Course number</label>
+            <div class="row">
+              <span class="large-4 medium-4 columns">
+                <input type="number" ng-model="course.departmentNumber" style="padding-right:2px" min="0" max="99" maxlength="2" name="deptnumber" placeholder="##"/>
+              </span>
+              <span class="large-1 medium-1 columns" style="padding-top:8px">-</span>
+              <span class="large-6 medium-6 columns">
+                <input type="number" ng-model="course.courseNumber" style="padding-left:2px" min="0" max="999" maxlength="3" name="coursenumber" placeholder="###"/>
+              </span>
+            </div>
+            <label>Choose the semester</label>
+	    
+            <select ng-model="semester" ng-options="semesterLabel(s) for s in semesters" name="semester">
+            </select>
+            <input type="submit" value="Input Class" href="#" class="tiny button" />
+          </form>
         </div>
-        <div class="large-9 medium-9 columns">
+        <div class="large-9 medium-9 columns" ng-controller="ScheduleCtrl">
             <dl class="accordion" data-accordion>
                 <dd>
                     <a href="#panel1">Spring 2014</a>

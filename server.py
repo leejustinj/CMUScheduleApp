@@ -1,9 +1,18 @@
 from flask import Flask, render_template, render_template_string, redirect, request, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm.exc import NoResultFound
-import os
+import os, json
 
 from model.model import sessionContext, Base, Session, User, Department, Course, SelectedCourse
+
+
+def tryGet(val, key, default):
+    if val is None:
+        return default
+    elif key in val:
+        return val[key]
+    else:
+        return default
 
 
 app = Flask(__name__)
@@ -56,18 +65,18 @@ def department(number):
             except NoResultFound, e:
                 return jsonify(error = "No department with number %d" % number)
         elif request.method == 'POST':
-            name = request.args.get('name', type = str)
-    
+            data = request.get_json(force = True)
             try:
                 dept = session.query(Department).filter_by(number = number).one()
-                if name is not None:
-                    dept.name = name
+                if 'name' in data:
+                    dept.name = data['name']
                 return jsonify(dept.toJSONSerializable())
             except NoResultFound, e:
                 return jsonify(error = "No department with number %d" % number)
            
         elif request.method == 'PUT':
-            name = request.args.get('name', '', type = str)
+            data = request.get_json(force = True)
+            name = tryGet(data, 'name', '')
             dept = Department(number, name)
             session.add(dept)
             return jsonify(dept.toJSONSerializable())
@@ -92,15 +101,18 @@ def courseNumber(department, number):
             except NoResultFound, e:
                 return jsonify(error = "No course '%d-%d'" % (department, number))
         elif request.method == 'PUT':
-            name = request.args.get('name', '', type = str)
+            data = request.get_json()
+            name = tryGet(data, 'name', '')
             course = Course(department, number, name)
             session.add(course)
+            session.flush()
             return jsonify(course.toJSONSerializable())
 
 @app.route('/course', methods = ['GET', 'POST', 'DELETE'])
 def course():
     with sessionContext() as session:
-        id = int(request.args['id'])
+        data = request.get_json()
+        id = data['id']
         if request.method == 'GET':
             try:
                 course = session.query(Course).filter_by(id = id).one()
@@ -108,17 +120,14 @@ def course():
             except NoResultFound, e:
                 return jsonify(error = "No course with id %d" % id)
         elif request.method == 'POST':
-            departmentNumber = request.args.get('departmentNumber', type = int)
-            courseNumber = request.args.get('courseNumber', type = int)
-            name = request.args.get('name', type = str)
             try:
                 course = session.query(Course).filter_by(id = id).one()
-                if departmentName is not None:
-                    course.departmentNumber = departmentNumber
-                if courseNumber is not None:
-                    course.courseNumber = courseNumber
-                if name is not None:
-                    course.name = name
+                if 'departmentName' in data:
+                    course.departmentNumber = int(data['departmentNumber'])
+                if 'courseNumber' in data:
+                    course.courseNumber = int(data['courseNumber'])
+                if name in data:
+                    course.name = data['name']
                 return jsonify(course.toJSONSerializable())
             except NoResultFound, e:
                 return jsonify(error = "No course with id %d" % id)
@@ -134,6 +143,7 @@ def course():
 @app.route('/user/<andrewId>/schedule', methods = ['GET', 'POST', 'DELETE'])
 def schedule(andrewId):
     with sessionContext() as session:
+        request.args
         if request.method == 'GET':
             try:
                 user = session.query(User).filter_by(andrewId = andrewId).one()
@@ -143,9 +153,10 @@ def schedule(andrewId):
             except NoResultFound, e:
                 return jsonify(error = "No user with andrewId '%s'" % andrewId)
         elif request.method == 'POST':
-            courseId = int(request.args['course'])
-            year = int(request.args['year'])
-            semester = request.args['semester']
+            data = request.get_json(force = True)
+            courseId = int(data['course'])
+            year = int(data['year'])
+            semester = data['semester']
 
             try:                
                 user = session.query(User).filter_by(andrewId = andrewId).one()
@@ -153,6 +164,7 @@ def schedule(andrewId):
                     course = session.query(Course).filter_by(id = courseId).one()
                     selectedCourse = SelectedCourse(user, course, year, semester)
                     session.add(selectedCourse)
+                    session.flush()
                     return jsonify(selectedCourse.toJSONSerializable())
                 except NoResultFound, e:
                     return jsonify(error = "No course with id %s" % courseId)
@@ -161,7 +173,8 @@ def schedule(andrewId):
                 return jsonify(error = "No user with andrewId %s" % andrewId)
            
         elif request.method == 'DELETE':
-            id = int(request.args['id'])
+            data = request.get_json(force = True)
+            id = int(data['id'])
             selectedCourse = session.query(SelectedCourse).filter_by(id = id).one()
             session.delete(selectedCourse)
             return jsonify(success = "")

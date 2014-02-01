@@ -73,10 +73,10 @@ class Course(Base):
     def __repr__(self):
         return '<Course("%d-%d", "%s")>' % (self.departmentNumber, self.courseNumber, self.name)
 
-    def toJSONSerialziable(self):
+    def toJSONSerializable(self):
         return {'id' : self.id,
-                'department': self.department.toJSONSerializable(),
-                'courseNumber' : self.number}
+                'department': self.departmentNumber,
+                'courseNumber' : self.courseNumber}
 
 class SelectedCourse(Base):
     __tablename__ = 'courseSelections'
