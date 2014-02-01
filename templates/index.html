@@ -38,7 +38,11 @@
 		      <h4>{{semester.semester}} {{semester.year}}</h4>
                     <div id = "panel{{outer}}" class="content">
                         <dl class="tabs" ng-repeat="course in semester.courses">
-			  <dd>{{course.department}}-{{course.courseNumber}}: {{course.name}}</dd>
+			  <dd>{{course.course.department}}-{{course.course.courseNumber}}: {{course.course.name}}</dd>
+			  <form ng-submit="saveComment(user, course)">
+			    <textarea ng-model="course.comments"></textarea>
+			    <input type="submit" value="Save Comments" class="tiny button" />
+			  </form>
                         </dl><!--
                         <div class="tabs-content" ng-repeat="course in semester.courses">
                             <div class = "content" id="panel{{outer}}-{{$index}}">

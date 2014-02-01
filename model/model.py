@@ -92,6 +92,8 @@ class SelectedCourse(Base):
     year = Column(Integer, nullable = False)
     semester = Column(Semester, nullable = False)
 
+    comments = Column(String)
+
     def __init__(self,  user, course, year, semester):
         self.user = user
         self.course = course
@@ -111,4 +113,5 @@ class SelectedCourse(Base):
                  'user' : self.user.toJSONSerializable(),
                  'course' : self.course.toJSONSerializable(),
                  'year' : self.year,
-                 'semester' : self.semester}
+                 'semester' : self.semester,
+                 'comments' : self.comments}

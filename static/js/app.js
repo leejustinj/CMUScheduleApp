@@ -23,6 +23,17 @@ scheduleApp.controller('ScheduleCtrl', function ($scope, $http) {
 				    })
 		    })
     }
+
+    $scope.saveComment = function(user, course)
+    {
+	var userURL = '/user/' + user.andrewId + '/schedule'
+	$http.put(userURL, course).
+	    success(function (data)
+		    {
+			console.log(data)
+			course.comments = data.comments
+		    })
+    }
     
 
 } )

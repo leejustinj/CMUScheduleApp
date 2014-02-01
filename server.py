@@ -3,10 +3,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm.exc import NoResultFound
 from itertools import groupby
 from jinja2.environment import Environment
+import apis
 import os, json
 
 from model.model import sessionContext, Base, Session, User, Department, Course, SelectedCourse
-
+schedule = apis.Scheduling(app_id='52dbc15e-0ee2-42b0-ad07-3501cd78a17e', 
+                           app_secret_key='7odnErOb5STSv5Z7GrYK9ZrqunpzT4py9hIVCy60S7CkI-P-pArFrGMO')
 
 def tryGet(val, key, default):
     if val is None:
@@ -124,6 +126,14 @@ def courseNumber(department, number):
         elif request.method == 'PUT':
             data = request.get_json()
             name = tryGet(data, 'name', '')
+
+            # spring = schedule.course(semester = 'S14', department =department,
+                                     course_id = number)
+            # fall = schedule.course(semester = 'F13', department =department,
+                                     course_id = number)
+            # name = tryGet(fall, 'name', "")
+            # name = tryGet(spring, 'name', "")
+
             course = Course(department, number, name)
             session.add(course)
             session.flush()
@@ -149,6 +159,7 @@ def course():
                     course.courseNumber = int(data['courseNumber'])
                 if name in data:
                     course.name = data['name']
+
                 return jsonify(course.toJSONSerializable())
             except NoResultFound, e:
                 return jsonify(error = "No course with id %d" % id)
@@ -161,7 +172,7 @@ def course():
             except NoResultFound, e:
                 return jsonify(error = "No course with id %d" % id)
 
-@app.route('/user/<andrewId>/schedule', methods = ['GET', 'POST', 'DELETE'])
+@app.route('/user/<andrewId>/schedule', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def schedule(andrewId):
     with sessionContext() as session:
         request.args
@@ -171,7 +182,9 @@ def schedule(andrewId):
                 selectedCourses = sorted(user.selectedClasses, key = sortIndexSemester)
                 schedule = [{'semester' : k['semester'], 
                               'year' : k['year'],
-                             'courses' : [c.course.toJSONSerializable()
+                             'courses' : [{'course' : c.course.toJSONSerializable(),
+                                           'comments' : c.comments,
+                                           'id' : c.id} 
                                           for c in courses]}
                             for k, courses in groupby(selectedCourses, semesterKey)]
                 return jsonify(user = user.toJSONSerializable(),
@@ -187,12 +200,20 @@ def schedule(andrewId):
             courseId = int(data['course'])
             year = int(data['year'])
             semester = data['semester']
+            comments = tryGet(data, 'comments', "")
+
+            def toAPISem(semester, year):
+                if semester == 'Fall':
+                    return 'F%d' % (year - 2000)
+                else:
+                    return 'S%d' % (year - 2000)
 
             try:                
                 user = session.query(User).filter_by(andrewId = andrewId).one()
                 try:
                     course = session.query(Course).filter_by(id = courseId).one()
                     selectedCourse = SelectedCourse(user, course, year, semester)
+                    selectedCourse.comments = comments
                     session.add(selectedCourse)
                     session.flush()
                     return jsonify(selectedCourse.toJSONSerializable())
@@ -201,7 +222,16 @@ def schedule(andrewId):
                 return jsonify(dept.toJSONSerializable())
             except NoResultFound, e:
                 return jsonify(error = "No user with andrewId %s" % andrewId)
-           
+
+        elif request.method == 'PUT':
+            data = request.get_json(force = True)
+            id = int(data['id'])
+            comments = tryGet(data, 'comments', "")
+            selectedCourse = session.query(SelectedCourse).filter_by(id = id).one()
+            selectedCourse.comments = comments
+            session.flush()
+            return jsonify(selectedCourse.toJSONSerializable())
+
         elif request.method == 'DELETE':
             data = request.get_json(force = True)
             id = int(data['id'])
