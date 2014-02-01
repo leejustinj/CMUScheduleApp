@@ -5,7 +5,7 @@ from server import app
 from sqlalchemy import create_engine
 from model.model import Session, Base
 
-engine = create_engine('postgresql://postres:@localhost/scheduleDB')
+engine = create_engine('postgresql://webserver:tiger@localhost/scheduleDB')
 Session.configure(bind = engine)
 
 Base.metadata.create_all(engine)
