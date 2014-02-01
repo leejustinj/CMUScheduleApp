@@ -1,10 +1,10 @@
-from sqlalchemy import create_engine, Column, Integer, String, Enum, ForeignKey
+from sqlalchemy import Column, Integer, String, Enum, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, sessionmaker
 
 
-engine = create_engine('sqlite:///:memory:')
 Base = declarative_base()
+Session = sessionmaker()
 
 
 Semester = Enum("Fall", "Spring")
@@ -100,5 +100,3 @@ class SelectedCourse(Base):
                  'course' : self.course.toJSONSerializable(),
                  'year' : self.year,
                  'semester' : self.semester}
-
-Base.metadata.create_all(engine)
