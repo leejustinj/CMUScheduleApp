@@ -1,10 +1,11 @@
 var scheduleApp = angular.module('scheduleApp', []);
 
+/*
 scheduleApp.config(function ($interpolateProvider)
 {
     $interpolateProvider.startSymbol('|}');
     $interpolateProvider.endSymbol('{|');
-})
+})*/
 
 scheduleApp.controller('ScheduleCtrl', function ($scope, $http) {
 
@@ -17,7 +18,7 @@ scheduleApp.controller('ScheduleCtrl', function ($scope, $http) {
 			$http.get(userURL + '/schedule').
 			    success(function (data)
 				    {
-					console.log(data)
+					$scope.schedule = data
 				    })
 		    })
     }

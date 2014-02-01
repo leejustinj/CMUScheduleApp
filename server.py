@@ -2,6 +2,7 @@ from flask import Flask, render_template, render_template_string, redirect, requ
 from sqlalchemy import create_engine
 from sqlalchemy.orm.exc import NoResultFound
 from itertools import groupby
+from jinja2.environment import Environment
 import os, json
 
 from model.model import sessionContext, Base, Session, User, Department, Course, SelectedCourse
@@ -26,6 +27,9 @@ def semesterKey(sched):
 
 
 app = Flask(__name__)
+app.jinja_env.variable_start_string = '{|'
+app.jinja_env.variable_end_string = '|}'
+
 
 @app.route('/submitinput',methods=['POST'])
 def choose_class():
