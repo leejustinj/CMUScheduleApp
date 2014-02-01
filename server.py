@@ -128,9 +128,9 @@ def courseNumber(department, number):
             name = tryGet(data, 'name', '')
 
             # spring = schedule.course(semester = 'S14', department =department,
-                                     course_id = number)
+            # course_id = number)
             # fall = schedule.course(semester = 'F13', department =department,
-                                     course_id = number)
+            #                         course_id = number)
             # name = tryGet(fall, 'name', "")
             # name = tryGet(spring, 'name', "")
 
