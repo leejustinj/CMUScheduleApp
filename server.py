@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-from flask import Flask, render_template, redirect, jsonify, request
-=======
-from flask import Flask, render_template, render_template_string, redirect, request
->>>>>>> 531a4131943d8960fdcaf3cf6d6bce25ed14eca2
+from flask import Flask, render_template, render_template_string, redirect, request,jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm.exc import NoResultFound
 import os
