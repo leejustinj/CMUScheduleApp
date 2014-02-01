@@ -1,4 +1,4 @@
 CMUSchedulePlanner 
 ==============
 
-An app to help students develop schedules; Make for TartanHacks 2014
+An app to help students develop schedules; Made for TartanHacks 2014
