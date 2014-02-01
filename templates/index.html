@@ -34,104 +34,19 @@
           </form>
         </div>
         <div class="large-9 medium-9 columns">
-            <dl class="accordion" data-accordion>
+            <dl class="accordion" data-accordion ng-repeat="semester in schedule" ng-init="outer = $index">
                 <dd>
-                    <a href="#panel1">Spring 2014</a>
-                    <div id = "panel1" class="content active">
-                        <dl class="tabs" data-tab>
-                            <dd class="active"><a href="#panel1-1">76101</a></dd>
-                            <dd><a href="#panel1-2">15122</a></dd>
-                            <dd><a href="#panel1-3">15251</a></dd>
-                            <dd><a href="#panel1-4">21241</a></dd>
+                    <a ng-href="#panel{|outer|}">
+		      {| semester.semester + " " + semester.year|}</a>
+                    <div id = "panel{|outer|}" class="content active">
+                        <dl class="tabs" data-tab ng-repeat="course in semester.courses">
+			  <dd><a ng-href="#panel{|outer + '-' + index|}">
+			      {|course.department + "-" 
+			      + course.courseNumber|}</a></dd>
                         </dl>
-                        <div class="tabs-content">
-                            <div class="content active" id="panel1-1">
-                                <p>First panel content goes here...</p>
-                            </div>
-                            <div class="content" id="panel1-2">
-                                <p>Second panel content goes here...</p>
-                            </div>
-                            <div class="content" id="panel1-3">
-                                <p>Third panel content goes here...</p>
-                            </div>
-                            <div class="content" id="panel1-4">
-                                <p>Fourth panel content goes here...</p>
-                            </div>
-                        </div>
-                    </div>
-                </dd>
-                <dd>
-                    <a href="#panel2">Fall 2014</a>
-                    <div id="panel2" class="content">
-                        <dl class="tabs" data-tab>
-                            <dd class="active"><a href="#panel2-1">15323</a></dd>
-                            <dd><a href="#panel2-2">15213</a></dd>
-                            <dd><a href="#panel2-3">80180</a></dd>
-                            <dd><a href="#panel2-4">36217</a></dd>
-                        </dl>
-                        <div class="tabs-content">
-                            <div class="content active" id="panel2-1">
-                                <p>First panel content goes here...</p>
-                            </div>
-                            <div class="content" id="panel2-2">
-                                <p>Second panel content goes here...</p>
-                            </div>
-                            <div class="content" id="panel2-3">
-                                <p>Third panel content goes here...</p>
-                            </div>
-                            <div class="content" id="panel2-4">
-                                <p>Fourth panel content goes here...</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </dd>
-                <dd>
-                    <a href="#panel3">Spring 2015</a>
-                    <div id="panel3" class="content">
-                        <dl class="tabs" data-tab>
-                            <dd class="active"><a href="#panel3-1">15210</a></dd>
-                            <dd><a href="#panel3-2">15112</a></dd>
-                            <dd><a href="#panel3-3">15151</a></dd>
-                            <dd><a href="#panel3-4">21241</a></dd>
-                        </dl>
-                        <div class="tabs-content">
-                            <div class="content active" id="panel3-1">
-                                <p>First panel content goes here...</p>
-                            </div>
-                            <div class="content" id="panel3-2">
-                                <p>Second panel content goes here...</p>
-                            </div>
-                            <div class="content" id="panel3-3">
-                                <p>Third panel content goes here...</p>
-                            </div>
-                            <div class="content" id="panel3-4">
-                                <p>Fourth panel content goes here...</p>
-                            </div>
-                        </div>
-                    </div>
-                </dd>
-                <dd>
-                    <a href="#panel4">Fall 2015</a>
-                    <div id="panel4" class="content">
-                        <dl class="tabs" data-tab>
-                            <dd class="active"><a href="#panel4-1">76101</a></dd>
-                            <dd><a href="#panel4-2">15112</a></dd>
-                            <dd><a href="#panel4-3">15151</a></dd>
-                            <dd><a href="#panel4-4">21241</a></dd>
-                        </dl>
-                        <div class="tabs-content">
-                            <div class="content active" id="panel4-1">
-                                <p>First panel content goes here...</p>
-                            </div>
-                            <div class="content" id="panel4-2">
-                                <p>Second panel content goes here...</p>
-                            </div>
-                            <div class="content" id="panel4-3">
-                                <p>Third panel content goes here...</p>
-                            </div>
-                            <div class="content" id="panel4-4">
-                                <p>Fourth panel content goes here...</p>
+                        <div class="tabs-content" ng-repeat="course in semester.courses">
+                            <div class = "content" id="panel{|outer + '-' + $index|}">
+                                <p>Panel {|$index|} content goes here...</p>
                             </div>
                         </div>
                     </div>
