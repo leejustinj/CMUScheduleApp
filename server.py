@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from flask import Flask, render_template, redirect, jsonify, request
+=======
+from flask import Flask, render_template, render_template_string, redirect, request
+>>>>>>> 531a4131943d8960fdcaf3cf6d6bce25ed14eca2
 from sqlalchemy import create_engine
 from sqlalchemy.orm.exc import NoResultFound
 import os
@@ -7,6 +11,12 @@ from model.model import sessionContext, Base, Session, User, Department
 
 
 app = Flask(__name__)
+
+@app.route('/submitinput',methods=['POST'])
+def choose_class():
+    coursenumber=request.form.get('coursenumber')
+    semester=request.form.get('semester')
+    return render_template('index.html')
 
 @app.route('/')
 def index():
