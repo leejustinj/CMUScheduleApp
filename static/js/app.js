@@ -18,7 +18,8 @@ scheduleApp.controller('ScheduleCtrl', function ($scope, $http) {
 			$http.get(userURL + '/schedule').
 			    success(function (data)
 				    {
-					$scope.schedule = data
+					console.log(data)
+					$scope.schedule = data.schedule
 				    })
 		    })
     }
@@ -52,6 +53,7 @@ scheduleApp.controller('AddCourseCtrl', function ($scope, $http) {
 			year : $scope.semester.year,
 			semester : $scope.semester.semester
 		       })
+	    $scope.load(user)
 	}
 
 	$http.get(courseUrl).

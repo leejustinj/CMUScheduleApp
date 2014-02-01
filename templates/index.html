@@ -34,20 +34,17 @@
           </form>
         </div>
         <div class="large-9 medium-9 columns">
-            <dl class="accordion" data-accordion ng-repeat="semester in schedule" ng-init="outer = $index">
-                <dd>
-                    <a ng-href="#panel{{outer}}">
-		      {{semester.semester}} {{semester.year}}</a>
+            <dl ng-repeat="semester in schedule" ng-init="outer = $index">
+		      <h4>{{semester.semester}} {{semester.year}}</h4>
                     <div id = "panel{{outer}}" class="content">
-                        <dl class="tabs" data-tab ng-repeat="course in semester.courses">
-			  <dd><a ng-href="#panel{{outer}}-{{index}}">
-			      {{course.department}}- {{course.courseNumber}}</a></dd>
-                        </dl>
+                        <dl class="tabs" ng-repeat="course in semester.courses">
+			  <dd>{{course.department}}-{{course.courseNumber}}: {{course.name}}</dd>
+                        </dl><!--
                         <div class="tabs-content" ng-repeat="course in semester.courses">
                             <div class = "content" id="panel{{outer}}-{{$index}}">
                                 <p>Panel {{$index}} content goes here...</p>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </dd>
             </dl>

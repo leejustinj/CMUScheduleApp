@@ -171,8 +171,7 @@ def schedule(andrewId):
                 selectedCourses = sorted(user.selectedClasses, key = sortIndexSemester)
                 schedule = [{'semester' : k['semester'], 
                               'year' : k['year'],
-                             'courses' : [{'courseId' : c.courseId, 
-                                           'course' : c.course.toJSONSerializable()}
+                             'courses' : [c.course.toJSONSerializable()
                                           for c in courses]}
                             for k, courses in groupby(selectedCourses, semesterKey)]
                 return jsonify(user = user.toJSONSerializable(),
