@@ -1,5 +1,5 @@
 {% include 'header.html' %}
-    <body>
+    <body ng-controller="ScheduleCtrl">
     
     <div class="row">
         <div class="large-12 columns">
@@ -9,10 +9,13 @@
 
     <div class="row">
         <div class="large-3 medium-3 columns panel">
+	  <form ng-submit="load(user)">
+	    <label>Your Andrew ID:</label>
+            <input type="text" ng-model="user.andrewId" name="andrewid" placeholder="Andrew ID"/>
+	    <input type="submit" value="Login" href="#" class="tiny button" />
+	  </form>
 	  <form ng-controller="AddCourseCtrl" ng-submit="addCourse(user, course)">
             <h5>Select a class</h5>
-            <label>Your Andrew ID:</label>
-            <input type="text" ng-model="user.andrewId" name="andrewid" placeholder="Andrew ID"/>
             <label>Course number</label>
             <div class="row">
               <span class="large-4 medium-4 columns">
@@ -30,7 +33,7 @@
             <input type="submit" value="Input Class" href="#" class="tiny button" />
           </form>
         </div>
-        <div class="large-9 medium-9 columns" ng-controller="ScheduleCtrl">
+        <div class="large-9 medium-9 columns">
             <dl class="accordion" data-accordion>
                 <dd>
                     <a href="#panel1">Spring 2014</a>

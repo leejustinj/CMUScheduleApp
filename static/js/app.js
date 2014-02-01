@@ -6,11 +6,26 @@ scheduleApp.config(function ($interpolateProvider)
     $interpolateProvider.endSymbol('{|');
 })
 
-scheduleApp.controller('ScheduleCtrl', function () {})
+scheduleApp.controller('ScheduleCtrl', function ($scope, $http) {
+
+    $scope.load = function(user)
+    {
+	var userURL = '/user/' + user.andrewId
+	$http.put(userURL).
+	    success(function ()
+		    {
+			$http.get(userURL + '/schedule').
+			    success(function (data)
+				    {
+					console.log(data)
+				    })
+		    })
+    }
+    
+
+} )
 
 scheduleApp.controller('AddCourseCtrl', function ($scope, $http) {
-    $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-
     $scope.semesterLabel = function(s)
     {
 	return (s.semester + " " + s.year.toString())

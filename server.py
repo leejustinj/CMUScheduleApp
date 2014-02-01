@@ -1,6 +1,7 @@
 from flask import Flask, render_template, render_template_string, redirect, request, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm.exc import NoResultFound
+from itertools import groupby
 import os, json
 
 from model.model import sessionContext, Base, Session, User, Department, Course, SelectedCourse
@@ -13,6 +14,15 @@ def tryGet(val, key, default):
         return val[key]
     else:
         return default
+
+def sortIndexSemester(sched):
+    if sched.semester == 'Spring':
+        return sched.year * 2
+    else:
+        return 2 * sched.year + 1
+
+def semesterKey(sched):
+    return {'semester' : sched.semester, 'year' : sched.year}
 
 
 app = Flask(__name__)
@@ -32,6 +42,7 @@ def user(andrewId):
     with sessionContext() as session:
         if request.method == 'GET':
             try:
+                session.flush()
                 user = session.query(User).filter_by(andrewId = andrewId).one()
                 return jsonify(user.toJSONSerializable())
             except NoResultFound, e:
@@ -45,8 +56,13 @@ def user(andrewId):
            
         elif request.method == 'PUT':
             user = User(andrewId)
-            session.add(user)
-            return jsonify(user.toJSONSerializable())
+            existing = session.query(User).filter_by(andrewId = andrewId).all()
+            if len(existing) == 0:
+                session.add(user)
+                session.flush()
+                return jsonify(user.toJSONSerializable())
+            else:
+                return jsonify(existing[0].toJSONSerializable())
         elif request.method == 'DELETE':
             try:
                 user = session.query(User).filter_by(andrewId = andrewId).one()
@@ -79,6 +95,7 @@ def department(number):
             name = tryGet(data, 'name', '')
             dept = Department(number, name)
             session.add(dept)
+            session.flush()
             return jsonify(dept.toJSONSerializable())
         elif request.method == 'DELETE':
             try:
@@ -147,9 +164,19 @@ def schedule(andrewId):
         if request.method == 'GET':
             try:
                 user = session.query(User).filter_by(andrewId = andrewId).one()
-                return jsonify(user = user.toJSONSerializable,
-                               schedule = [c.toJSONSerializable for c in user.selectedClasses]
-                           )
+                selectedCourses = sorted(user.selectedClasses, key = sortIndexSemester)
+                schedule = [{'semester' : k['semester'], 
+                              'year' : k['year'],
+                             'courses' : [{'courseId' : c.courseId, 
+                                           'course' : c.course.toJSONSerializable()}
+                                          for c in courses]}
+                            for k, courses in groupby(selectedCourses, semesterKey)]
+                return jsonify(user = user.toJSONSerializable(),
+                               schedule = schedule)
+
+                # return jsonify(user = user.toJSONSerializable,
+                #                schedule = [c.toJSONSerializable for c in user.selectedClasses]
+                #            )
             except NoResultFound, e:
                 return jsonify(error = "No user with andrewId '%s'" % andrewId)
         elif request.method == 'POST':
