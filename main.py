@@ -3,6 +3,7 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from server import app
 from sqlalchemy import create_engine
+from model.model import Session, Base
 
 engine = create_engine('postgresql://webserver@localhost/scheduleDB')
 Session.configure(bind = engine)
