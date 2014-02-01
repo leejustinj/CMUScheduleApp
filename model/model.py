@@ -1,19 +1,31 @@
 from sqlalchemy import Column, Integer, String, Enum, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref, sessionmaker
+from contextlib import contextmanager
 
+Semester = Enum("Fall", "Spring")
 
 Base = declarative_base()
 Session = sessionmaker()
 
-
-Semester = Enum("Fall", "Spring")
+@contextmanager
+def sessionContext():
+    session = Session()
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+        
 
 class User(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key = True)
-    andrewID = Column(String, unique = True, nullable = False)
+    andrewId = Column(String, unique = True, nullable = False)
 
     def __init__(self, andrewId):
         self.andrewId = andrewId
