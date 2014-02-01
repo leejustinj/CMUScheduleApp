@@ -5,14 +5,12 @@ import os
 from model.model import Base, Session
 
 app = Flask(__name__)
-courses={}
 
 @app.route('/submitinput',methods=['POST'])
 def choose_class():
     coursenumber=request.form.get('coursenumber')
     semester=request.form.get('semester')
-    courses[coursenumber]=semester
-    return render_template_string(semester)
+    return render_template('index.html')
 
 @app.route('/')
 def index():
