@@ -1,10 +1,15 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, render_template_string, redirect, request
 from sqlalchemy import create_engine
 import os
 
 from model.model import Base, Session
 
 app = Flask(__name__)
+
+@app.route('/submitinput',methods=['POST'])
+def choose_class():
+    coursenumber=request.form.get('coursenumber')
+    return render_template_string(coursenumber)
 
 @app.route('/')
 def index():
