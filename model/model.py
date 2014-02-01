@@ -21,6 +21,9 @@ class User(Base):
     def __repr__(self):
         return "<User(andrewId=%s)>" % self.andrewId
     
+    def toJSONSerializable(self):
+        return {'id' : self.id,
+                'user': self.andrewId}
 
 class Department(Base):
     __tablename__ = 'departments'
@@ -33,6 +36,10 @@ class Department(Base):
 
     def __repr__(self):
         return '<Department(%i, "%s")>' % (self.number, self.name)
+
+    def toJSONSerializable(self):
+        return {'number' : self.number, 
+                'name' : self.name}
     
 
 class Course(Base):
@@ -53,6 +60,11 @@ class Course(Base):
 
     def __repr__(self):
         return '<Course("%d-%d", "%s")>' % (self.departmentNumber, self.courseNumber, self.name)
+
+    def toJSONSerialziable(self):
+        return {'id' : self.id,
+                'department': self.department.toJSONSerializable(),
+                'courseNumber' : self.number}
 
 class SelectedCourse(Base):
     __tablename__ = 'courseSelections'
@@ -81,5 +93,12 @@ class SelectedCourse(Base):
             self.course.courseNumber,
             self.year,
             self.semester)
+
+    def toJSONSerializable(self):
+        return { 'id' : self.id,
+                 'user' : self.user.toJSONSerializable(),
+                 'course' : self.course.toJSONSerializable(),
+                 'year' : self.year,
+                 'semester' : self.semester}
 
 Base.metadata.create_all(engine)
